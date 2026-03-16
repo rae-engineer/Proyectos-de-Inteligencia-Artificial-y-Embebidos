@@ -111,6 +111,15 @@ public class UIManager : MonoBehaviour {
         resStateParaHash = Animator.StringToHash("ScreenState");
     }
 
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Z))
+        {
+            int randomIndex = UnityEngine.Random.Range(0, currentAnswers.Count);
+            SimulateAnswerClick(randomIndex);
+        }
+    }
+
     #endregion
 
     /// <summary>
@@ -232,5 +241,33 @@ public class UIManager : MonoBehaviour {
     void UpdateScoreUI()
     {
         uIElements.ScoreText.text = "Score: " + events.CurrentFinalScore;
+    }
+
+    /// <summary>
+    /// Simula el click en un botón de respuesta según un número generado (0-3).
+    /// </summary>
+    public void SimulateAnswerClick(int generatedNumber)
+    {
+        if (currentAnswers == null || currentAnswers.Count == 0)
+        {
+            Debug.LogWarning("No hay respuestas generadas aún.");
+            return;
+        }
+
+        // Mapea el número generado al índice dentro del rango disponible
+        int index = Mathf.Clamp(generatedNumber, 0, currentAnswers.Count - 1);
+
+        AnswerData selectedAnswer = currentAnswers[index];
+
+        if (selectedAnswer == null)
+        {
+            Debug.LogWarning($"El botón en el índice {index} no existe.");
+            return;
+        }
+
+        // Simula el click exactamente como lo haría el jugador
+        selectedAnswer.SwitchState();
+
+        Debug.Log($"Click simulado en respuesta #{index}");
     }
 }
